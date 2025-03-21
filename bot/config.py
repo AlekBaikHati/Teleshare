@@ -58,7 +58,7 @@ class Config(BaseSettings):
     PROTECT_CONTENT: bool = True
     FORCE_SUB_CHANNELS: list[int] = []
     AUTO_GENERATE_LINK: bool = True
-
+    LINK_PHOTO: str 
     # Injected Config
     channels_n_invite: dict[str, ChannelInfo] = {}
 
