@@ -2,6 +2,7 @@ from pyrogram import filters
 from pyrogram.client import Client
 import time  # Import time untuk menghitung uptime
 import asyncio
+from bot.utilities.pyrotools import HelpCmd  # Pastikan ini ada
 
 # Menyimpan waktu mulai bot
 START_TIME = time.time()
@@ -34,3 +35,9 @@ async def ping(client: Client, message):
     # Menghapus pesan ping sementara setelah 5 detik
     #await asyncio.sleep(10)  # Tunggu 5 detik sebelum menghapus pesan
     #await ping_message.delete()  # Menghapus pesan ping sementara
+    HelpCmd.set_help(
+        command="ping",
+        description=ping.__doc__,
+        allow_global=True,
+        allow_non_admin=True,
+    )
