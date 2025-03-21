@@ -15,10 +15,10 @@ from bot.utilities.pyrotools import HelpCmd
 )
 @RateLimiter.hybrid_limiter(func_count=1)
 async def help_command(client: Client, message: Message) -> Message:  # noqa: ARG001
-    """A command to display all available help commands:
+    """Perintah untuk menampilkan semua perintah bantuan yang tersedia:
 
-    **Usage:**
-        /help [command]
+    **Penggunaan:**
+        /help [perintah]
     """
     is_root_admin = message.from_user.id in config.ROOT_ADMINS_ID
     global_mode = options.settings.GLOBAL_MODE
@@ -32,20 +32,25 @@ async def help_command(client: Client, message: Message) -> Message:  # noqa: AR
             else HelpCmd.get_non_admin_cmds(),
         )
 
-        format_cmds = "\n".join(available_commands)
-        instructions = f"List of all available commands:```\n{format_cmds}```\n\n{cleandoc(help_command.__doc__) if help_command.__doc__ else ''}"  # noqa: E501
-
+        format_cmds = "\n".join([f"> /{cmd}" for cmd in available_commands])
+        instructions = (
+            f"✦•┈๑⋅⋯ ⋯⋅๑┈•✦\n"
+            f"Daftar semua perintah yang tersedia:\n\n"
+            f"{format_cmds}\n\n"
+            f"{cleandoc(help_command.__doc__) if help_command.__doc__ else ''}\n\n"
+            f"✦•┈๑⋅⋯ ⋯⋅๑┈•✦\n"
+        )
         return await message.reply(text=instructions, quote=True)
 
     command_info = HelpCmd.get_help(command=message.command[1])
 
     if not command_info:
-        return await message.reply(text="This command does not exists.", quote=True)
+        return await message.reply(text="Perintah ini tidak ada.", quote=True)
 
-    instructions = cleandoc(f"""**Command**: {message.command[1]}
+    instructions = cleandoc(f"""**Perintah**: {message.command[1]}
     **Alias**: {command_info.get("alias")}
 
-    **Description**:
+    **Deskripsi**:
         {command_info.get("description")}""")
 
     return await message.reply(text=instructions, quote=True)
