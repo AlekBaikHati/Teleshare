@@ -26,7 +26,7 @@ class AutoLinkGen:
         message: Message,
         file_data: list[FileResolverModel],
     ) -> Message:
-        "Handles file backups"
+        "Mengatur cadangan file"
 
         unique_link = f"{uuid.uuid4().int}"
         file_link = DataEncoder.encode_data(unique_link)
@@ -41,18 +41,21 @@ class AutoLinkGen:
                 [[InlineKeyboardButton("Share URL", url=f"https://t.me/share/url?url={link}")]],
             )
 
-            return await message.reply(
-                text=f"Here is your link:\n>{link}",
+            photo_url = config.LINK_PHOTO
+            caption = f">Inilah tautan Anda:\n>{link}"
+
+            return await message.reply_photo(
+                photo=photo_url,
+                caption=caption,
                 quote=True,
                 reply_markup=reply_markup,
-                disable_web_page_preview=True,
             )
 
-        return await message.reply("Couldn't add files to database")
+        return await message.reply("Tidak bisa menambahkan file ke basis data")
 
     @classmethod
     async def media_group_handler(cls, client: Client, message: Message) -> None:
-        "backup"
+        "Penanganan grup media"
         await asyncio.sleep(3)
         file_datas = [i.model_dump() for i in cls.files_cache[message.from_user.id][message.media_group_id]]
 
@@ -80,6 +83,7 @@ class AutoLinkGen:
 
     @classmethod
     async def handle_files(cls, client: Client, message: Message) -> None:
+        "Mengatur file"
         file_type = message.document or message.video or message.photo or message.audio or message.sticker
         message_id = message.id
         user_id = message.from_user.id
@@ -116,7 +120,7 @@ class AutoLinkGen:
 )
 @RateLimiter.hybrid_limiter(func_count=1)
 async def auto_link_gen(client: Client, message: ConvoMessage) -> Message | None:
-    """Handle files that is send or forwarded directly to the bot and generate a link for it."""
+    """Mengatur file yang dikirim atau diteruskan langsung ke bot dan menghasilkan tautan untuk itu."""
 
     if getattr(client.me, "id", None) == message.from_user.id or not config.AUTO_GENERATE_LINK:
         return None

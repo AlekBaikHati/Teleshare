@@ -19,16 +19,16 @@ database = MongoDB()
 )
 @RateLimiter.hybrid_limiter(func_count=1)
 async def range_files(client: Client, message: ConvoMessage) -> Message | None:
-    """>**Fetch files directly from backup channel to create a sharable link of ranged file ids.**
+    """>**Mengambil file langsung dari saluran cadangan untuk membuat tautan yang dapat dibagikan dari id file yang berurutan.**
 
-    **Usage:**
-        /range_files [start link] [end link] [(optional) exclude id]
+    **Penggunaan:**
+        /range_files [tautan awal] [tautan akhir] [(opsional) id yang dikecualikan]
 
         /range_files https://t.me/c/-100/9 https://t.me/c/-100/100
 
         /range_files https://t.me/c/-100/9 https://t.me/c/-100/100 69 70 80 90
 
-    >This fetch files from database started with file id 9 to 100 and excludes 69, 79, 80 and 90
+    >Ini mengambil file dari basis data mulai dari id file 9 hingga 100 dan mengkecualikan 69, 79, 80, dan 90
     """
 
     if not message.command[2:]:
@@ -37,7 +37,7 @@ async def range_files(client: Client, message: ConvoMessage) -> Message | None:
     start_file_link = message.command[1].split("/")
 
     if start_file_link[-2] != str(config.BACKUP_CHANNEL).removeprefix("-100"):
-        return await message.reply(text="Only send a file link from your current database channel", quote=True)
+        return await message.reply(text="Hanya kirim tautan file dari saluran basis data Anda saat ini", quote=True)
 
     end_file_link = message.command[2].split("/")
     exclude_file_ids = set(map(int, message.command[3:]))
@@ -65,7 +65,7 @@ async def range_files(client: Client, message: ConvoMessage) -> Message | None:
         )
 
     if not files_to_store:
-        return await message.reply(text="Couldn't fetch any files from given range.", quote=True)
+        return await message.reply(text="Tidak bisa mengambil file dari rentang yang diberikan.", quote=True)
 
     unique_link = f"{uuid.uuid4().int}"
     file_link = DataEncoder.encode_data(unique_link)
@@ -79,13 +79,16 @@ async def range_files(client: Client, message: ConvoMessage) -> Message | None:
             [[InlineKeyboardButton("Share URL", url=f"https://t.me/share/url?url={link}")]],
         )
 
-        return await message.reply(
-            text=f"Here is your link:\n>{link}",
+        photo_url = config.LINK_PHOTO
+        caption = f">Inilah tautan Anda:\n>{link}"
+
+        return await message.reply_photo(
+            photo=photo_url,
+            caption=caption,
             quote=True,
             reply_markup=reply_markup,
-            disable_web_page_preview=True,
         )
-    return await message.reply(text="Couldn't add files to database", quote=True)
+    return await message.reply(text="Tidak bisa menambahkan file ke basis data", quote=True)
 
 
 HelpCmd.set_help(

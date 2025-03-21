@@ -31,47 +31,47 @@ class MakeFilesCommand:
     @RateLimiter.hybrid_limiter(func_count=1)
     async def message_reply(client: Client, message: Message, **kwargs: Any) -> Message:  # noqa: ANN401, ARG004
         """
-        Replies to a message with rate limiter.
+        Balas pesan dengan pembatas laju.
 
         Parameters:
-            client (Client): The client instance.
-            message (Message): The message to reply to.
-            **kwargs (Any): Additional keyword arguments for the reply.
+            client (Client): Instansi klien.
+            message (Message): Pesan untuk dibalas.
+            **kwargs (Any): Argumen kata kunci tambahan untuk balasan.
 
         Returns:
-            Message: The replied message.
+            Message: Pesan yang dibalas.
         """
         return await message.reply(**kwargs)
 
     @classmethod
     async def handle_convo_start(cls, client: Client, message: ConvoMessage) -> Message:
         """
-        Handle conversation start.
+        Menghandle awal percakapan.
 
         Parameters:
-            client (Client): The client instance.
-            message (ConvoMessage): The conversation message.
+            client (Client): Instansi klien.
+            message (ConvoMessage): Pesan percakapan.
 
         Returns:
-            Message: The replied message.
+            Message: Pesan yang dijawab.
         """
         unique_id = message.chat.id + message.from_user.id
         cls.files_cache.setdefault(unique_id, {"files": [], "counter": 0})
-        return await cls.message_reply(client=client, message=message, text="Send your files.", quote=True)
+        return await cls.message_reply(client=client, message=message, text="Kirim file Anda.", quote=True)
 
     @classmethod
     async def handle_conversation(cls, client: Client, message: ConvoMessage) -> Message | None:
         """
-        Handle conversations and file uploads. Maintain file cache for optimization.
-        Process burst files, responding only when complete.
+        Menghandle percakapan dan unggahan file. Menjaga cache file untuk optimisasi.
+        Proses file burst, merespons hanya ketika selesai.
 
 
         Parameters:
-            client (Client): The client instance.
-            message (ConvoMessage): The conversation message.
+            client (Client): Instansi klien.
+            message (ConvoMessage): Pesan percakapan.
 
         Returns:
-            Message or None: The replied message or None if burst is triggered.
+            Message or None: Pesan yang dijawab atau None jika burst dipicu.
         """
         unique_id = message.chat.id + message.from_user.id
         file_type = message.document or message.video or message.photo or message.audio or message.sticker
@@ -79,7 +79,7 @@ class MakeFilesCommand:
             return await cls.message_reply(
                 client=client,
                 message=message,
-                text="> Only send support files!",
+                text="> Hanya kirim file dukungan!",
                 quote=True,
             )
 
@@ -100,7 +100,7 @@ class MakeFilesCommand:
             return None
 
         file_names = "\n".join(i["file_name"] for i in cls.files_cache[unique_id]["files"])
-        extra_message = ">File list truncated.\n- Send more files to continue.\n- Use /make_link for a shareable link."
+        extra_message = ">Daftar file dipotong.\n- Kirim lebih banyak file untuk melanjutkan.\n- Gunakan /make_link untuk tautan yang bisa dibagikan."
         return await cls.message_reply(
             client=client,
             message=message,
@@ -111,20 +111,20 @@ class MakeFilesCommand:
     @classmethod
     async def handle_convo_stop(cls, client: Client, message: ConvoMessage) -> Message:
         """
-        Handle the end of conversation.
+        Menghandle akhir dari percakapan.
 
-        This finalizes the conversation by:
-        - Checking if any files were uploaded.
-        - Optionally forwarding files to a backup channel.
-        - Storing file information in a database.
-        - Generating and sending a link to access the files.
+        Ini menyelesaikan percakapan dengan:
+        - Memeriksa apakah ada file yang diunggah.
+        - Opsi untuk meneruskan file ke saluran cadangan.
+        - Menyimpan informasi file dalam basis data.
+        - Menghasilkan dan mengirimkan tautan untuk mengakses file.
 
         Parameters:
-            client (Client): The client instance.
-            message (ConvoMessage): The conversation message.
+            client (Client): Instansi klien.
+            message (ConvoMessage): Pesan percakapan.
 
         Returns:
-            Message: The replied message.
+            Message: Pesan yang dijawab.
         """
         forward_limit_size = 100
         unique_id = message.chat.id + message.from_user.id
@@ -138,7 +138,7 @@ class MakeFilesCommand:
             return await cls.message_reply(
                 client=client,
                 message=message,
-                text="No file inputs, stopping task.",
+                text="Tidak ada input file, menghentikan tugas.",
                 quote=True,
             )
 
@@ -163,7 +163,7 @@ class MakeFilesCommand:
                         },
                     )
         else:
-            # Create a copy of the files cache, excluding the 'file_name' field from each file CacheEntry.
+            # Buat salinan dari cache file, kecuali field 'file_name' dari setiap CacheEntry.
             files_to_store = [
                 {k: v for k, v in i.items() if k != "file_name"} for i in cls.files_cache[unique_id]["files"]
             ]
@@ -179,18 +179,19 @@ class MakeFilesCommand:
         if add_file:
             link = f"https://t.me/{client.me.username}?start={file_link}"  # type: ignore[reportOptionalMemberAccess]
             reply_markup = InlineKeyboardMarkup(
-                [[InlineKeyboardButton("Share URL", url=f"https://t.me/share/url?url={link}")]],
+                [[InlineKeyboardButton("Bagikan URL", url=f"https://t.me/share/url?url={link}")]],
             )
 
-            return await cls.message_reply(
-                client=client,
-                message=message,
-                text=f"Here is your link:\n>{link}",
+            photo_url = config.LINK_PHOTO
+            caption = f">Inilah tautan Anda:\n>{link}"
+
+            return await message.reply_photo(
+                photo=photo_url,
+                caption=caption,
                 quote=True,
                 reply_markup=reply_markup,
-                disable_web_page_preview=True,
             )
-        return await message.reply("Couldn't add files to database")
+        return await message.reply("Tidak bisa menambahkan file ke basis data")
 
 
 @Client.on_message(
@@ -203,11 +204,11 @@ class MakeFilesCommand:
     ),
 )
 async def make_files_command_handler(client: Client, message: ConvoMessage) -> Message | None:
-    """Handles a conversation that receives files to generate an accessable file link.
+    """Menghandle percakapan yang menerima file untuk menghasilkan tautan file yang bisa diakses.
 
-    **Usage:**
-        /make_files: initiate a conversation then send your files.
-        /make_link: wraps the conversation and generates a link.
+    **Penggunaan:**
+        /make_files: memulai percakapan lalu kirim file Anda.
+        /make_link: membungkus percakapan dan menghasilkan tautan.
     """
     if message.convo_start:
         return await MakeFilesCommand.handle_convo_start(client=client, message=message)
