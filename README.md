@@ -170,7 +170,7 @@ If this repo cannot be deployed in Heroku, please fork it and deploy it manually
 <details>
 <summary>Koyeb Deployment</summary>
 
-[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/services/deploy?type=git&repository=github.com/AlekBaikHati/Teleshare&branch=main&builder=dockerfile&env%5BAPI_ID%5D=api_id&env%5BAPI_HASH%5D=api_hash&env%5BBOT_TOKEN%5D=bot_token&env%5BMONGO_DB_URL%5D=mongodb_url&env%5BBACKUP_CHANNEL%5D=backup&env%5BROOT_ADMINS_ID%5D=admins&env%5BFORCE_SUB_CHANNELS%5D=force_sub)
+[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/services/deploy?type=git&repository=github.com/AlekBaikHati/Teleshare&branch=main&builder=dockerfile&env%5BAPI_ID%5D=api_id&env%5BAPI_HASH%5D=api_hash&env%5BBOT_TOKEN%5D=bot_token&env%5BMONGO_DB_URL%5D=mongodb_url&env%5BBACKUP_CHANNEL%5D=backup&env%5BROOT_ADMINS_ID%5D=admins&env%5BFORCE_SUB_CHANNELS%5D=force_sub&env%5BLINK_PHOTO%5D=https://i.ibb.co.com/KxFPKjNL/image.png)
 
 Just setup the environment variables and your done.
 </details>
