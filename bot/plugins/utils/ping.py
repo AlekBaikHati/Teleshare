@@ -3,9 +3,11 @@ from pyrogram.client import Client
 import time  # Import time untuk menghitung uptime
 import asyncio
 from bot.utilities.pyrotools import HelpCmd  # Pastikan ini ada
+import datetime  # Import datetime untuk format waktu
 
 # Menyimpan waktu mulai bot
 START_TIME = time.time()
+START_DATETIME = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Format waktu mulai
 
 @Client.on_message(filters.command("ping") & filters.private)
 async def ping(client: Client, message):
@@ -24,12 +26,13 @@ async def ping(client: Client, message):
     ping_message = await message.reply("Pong... 🏓")  # Mengirim pesan sementara dengan emoji pingpong
     ping_time = (time.time() - start_time) * 1000  # Hitung waktu ping
 
-    # Kirim hasil ping dan uptime
+    # Kirim hasil ping, uptime, dan Active Since
     await asyncio.sleep(2)
     await ping_message.edit(
         f"✦•┈๑⋅⋯ ⋯⋅๑┈•✦\n"
         f">**Ping:** `{ping_time:.2f} ms`\n"
         f">**Uptime:** `{uptime_str}`\n"
+        f">**Active Since:** `{START_DATETIME}`\n"  # Menambahkan Active Since
         f"✦•┈๑⋅⋯ ⋯⋅๑┈•✦"
     )
     # Menghapus pesan ping sementara setelah 5 detik
