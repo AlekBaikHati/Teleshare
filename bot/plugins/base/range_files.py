@@ -80,7 +80,7 @@ async def range_files(client: Client, message: ConvoMessage) -> Message | None:
         )
 
         photo_url = config.LINK_PHOTO
-        caption = f">Inilah tautan Anda:\n>{link}"
+        caption = f">Inilah tautan Anda:\n{link}"
 
         return await message.reply_photo(
             photo=photo_url,
