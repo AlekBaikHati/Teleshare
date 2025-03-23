@@ -49,7 +49,7 @@ async def privacy(_: Client, message: Message) -> Message:
                 [
                     InlineKeyboardButton(
                         text="PRIVACY POLICY",
-                        web_app=WebAppInfo(url="https://i.ibb.co.com/qYjLjG3T/image.png"),
+                        web_app=WebAppInfo(url="https://telegram.org/privacy-tpa"),
                     ),
                 ],
             ],
