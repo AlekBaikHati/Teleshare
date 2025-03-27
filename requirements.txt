@@ -1,6 +1,6 @@
 tzdata
 
-git+https://github.com/KurimuzonAkuma/pyrogram.git@v2.1.39#egg=pyrogram
+git+https://github.com/KurimuzonAkuma/pyrogram.git@v2.1.22#egg=pyrogram
 TgCrypto==1.2.5
 
 APScheduler==3.10.4
