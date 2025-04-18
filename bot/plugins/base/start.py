@@ -253,9 +253,6 @@ async def return_start(
         link = f"https://t.me/{client.me.username}?start={message.command[1]}"  # type: ignore[reportOptionalMemberAccess]
         buttons.append([InlineKeyboardButton(text="Try Again", url=link)])
 
-    # Tambahkan tombol "ɢᴇᴛ ғɪʟᴇ ᴀɢᴀɪɴ!"
-    reload_url = f"https://t.me/{client.me.username}?start={message.command[1]}" if message.command and len(message.command) > 1 else None
-    buttons.append([InlineKeyboardButton("ɢᴇᴛ ғɪʟᴇ ᴀɢᴀɪɴ!", url=reload_url)])
 
     return await PyroHelper.option_message(
         client=client,
